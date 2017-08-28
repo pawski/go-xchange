@@ -17,7 +17,6 @@ const (
 	password = ""
 )
 
-
 var hit int = 0
 
 func main() {
