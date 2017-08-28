@@ -1,0 +1,12 @@
+hash: e0071a71f5f2cb570f8232b79dfeb97fe3ad9c1c18555381d7a549bfa9a2d532
+updated: 2017-08-28T17:28:39.940558562+02:00
+imports:
+- name: github.com/influxdata/influxdb
+  version: 0c54d8fc744220b8dc70f2987e04e78fec951285
+  subpackages:
+  - client/v2
+  - models
+  - pkg/escape
+- name: gopkg.in/yaml.v2
+  version: eb3733d160e74a9c7e442f435eb3bea458e1d19f
+testImports: []

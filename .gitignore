@@ -16,3 +16,5 @@
 vendor/*
 cache/*
 !cache/.gitkeep
+
+config.yml
