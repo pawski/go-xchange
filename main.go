@@ -4,7 +4,7 @@ import (
 	"github.com/Sirupsen/logrus"
 	"os"
 	"github.com/urfave/cli"
-	"github.com/pawski/go-xchange/cmd"
+	"github.com/pawski/go-xchange/command"
 )
 
 func main() {
@@ -38,10 +38,10 @@ func main() {
 
 	app.Commands = []cli.Command{
 		{
-			Name:  "run",
+			Name:  "collect",
 			Usage: "Starts continues collection of currency rates",
 			Action: func(c *cli.Context) {
-				if err := xchange.Execute(); err != nil {
+				if err := command.CollectExecute(); err != nil {
 					logger.Error(err)
 				}
 			},
