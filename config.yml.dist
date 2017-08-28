@@ -1,0 +1,2 @@
+influx_host: https://influxdb.host
+walutomat_url: https://panel.walutomat.pl/api/v1/best_offers.php

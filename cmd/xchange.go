@@ -8,6 +8,7 @@ import (
 	"github.com/pawski/go-xchange/http"
 	"github.com/influxdata/influxdb/client/v2"
 	"fmt"
+	"github.com/pawski/go-xchange/configuration"
 )
 
 const (
@@ -22,12 +23,14 @@ var hit int = 0
 func main() {
 	go procctl.RegisterSigTerm()
 
-	url := "https://panel.walutomat.pl/api/v1/best_offers.php"
+	configuration := configuration.Configuration()
+
+	url := configuration.WalutomatUrl
 	ticker := time.NewTicker(time.Second * 60)
 
 	// Create a new HTTPClient
 	influxdb, err := client.NewHTTPClient(client.HTTPConfig{
-		Addr:     "",
+		Addr:     configuration.InfluxDbHost,
 		Username: username,
 		Password: password,
 	})

@@ -4,3 +4,4 @@ import:
   version: ^1.3.4
   subpackages:
   - client/v2
+- package: gopkg.in/yaml.v2
