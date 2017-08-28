@@ -5,3 +5,10 @@ import:
   subpackages:
   - client/v2
 - package: gopkg.in/yaml.v2
+- package: github.com/urfave/cli
+  version: ^1.20.0
+- package: github.com/Sirupsen/logrus
+  version: ^1.0.3
+- package: golang.org/x/crypto
+  subpackages:
+  - ssh/terminal

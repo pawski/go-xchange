@@ -9,6 +9,7 @@ import (
 type config struct {
 	InfluxDbHost    string `yaml:"influx_host"`
 	WalutomatUrl   string `yaml:"walutomat_url"`
+	InfluxDbDatabase string `yaml:"influxdb_database"`
 }
 
 var loaded = false

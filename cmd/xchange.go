@@ -1,4 +1,4 @@
-package main
+package xchange
 
 import (
 	"log"
@@ -11,15 +11,9 @@ import (
 	"github.com/pawski/go-xchange/configuration"
 )
 
-const (
-	MyDB = "xchange"
-	username = ""
-	password = ""
-)
-
 var hit int = 0
 
-func main() {
+func Execute() (err error) {
 	go procctl.RegisterSigTerm()
 
 	configuration := configuration.Configuration()
@@ -30,8 +24,8 @@ func main() {
 	// Create a new HTTPClient
 	influxdb, err := client.NewHTTPClient(client.HTTPConfig{
 		Addr:     configuration.InfluxDbHost,
-		Username: username,
-		Password: password,
+		Username: "",
+		Password: "",
 	})
 
 	if err != nil {
@@ -40,24 +34,26 @@ func main() {
 
 	go func() {
 		log.Println("Start at", time.Now())
-		handleResponse(http.GetUrl(url), influxdb)
+		handleResponse(http.GetUrl(url), influxdb, configuration.InfluxDbDatabase)
 		hit++
 		for t := range ticker.C {
 			log.Println("Start at", t)
-			handleResponse(http.GetUrl(url), influxdb)
+			handleResponse(http.GetUrl(url), influxdb, configuration.InfluxDbDatabase)
 			hit++
 		}
 	}()
 
 	block := make(chan bool, 1)
 	<-block
+
+	return
 }
 
-func handleResponse(response []byte, influxdb client.Client) {
+func handleResponse(response []byte, influxdb client.Client, db string) {
 
 	// Create a new point batch
 	bp, err := client.NewBatchPoints(client.BatchPointsConfig{
-		Database:  MyDB,
+		Database:  db,
 		Precision: "s",
 	})
 	if err != nil {
