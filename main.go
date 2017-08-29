@@ -5,11 +5,10 @@ import (
 	"os"
 	"github.com/urfave/cli"
 	"github.com/pawski/go-xchange/command"
+	"github.com/pawski/go-xchange/logger"
 )
 
 func main() {
-
-	logger := logrus.New()
 
 	app := cli.NewApp()
 	app.Name = "XChange"
@@ -27,11 +26,11 @@ func main() {
 	}
 
 	app.Before = func(c *cli.Context) error {
-		logger.Formatter = &logrus.TextFormatter{FullTimestamp: true}
+		logger.Get().Formatter = &logrus.TextFormatter{FullTimestamp: true}
 		if c.GlobalBool("debug") {
-			logger.Level = logrus.DebugLevel
-			logger.Debug("Debug logging enabled")
-			logger.Debug(app.Name, "-", app.Version)
+			logger.SetDebugLevel()
+			logger.Get().Debug("Debug logging enabled")
+			logger.Get().Debug(app.Name, "-", app.Version)
 		}
 		return nil
 	}
@@ -42,7 +41,7 @@ func main() {
 			Usage: "Starts continues collection of currency rates",
 			Action: func(c *cli.Context) {
 				if err := command.CollectExecute(); err != nil {
-					logger.Error(err)
+					logger.Get().Error(err)
 				}
 			},
 		},

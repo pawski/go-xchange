@@ -1,14 +1,13 @@
 package command
 
 import (
-	"log"
 	"time"
 	"github.com/pawski/go-xchange/procctl"
 	"github.com/pawski/go-xchange/walutomat"
 	"github.com/pawski/go-xchange/http"
 	"github.com/influxdata/influxdb/client/v2"
-	"fmt"
 	"github.com/pawski/go-xchange/configuration"
+	"github.com/pawski/go-xchange/logger"
 )
 
 func CollectExecute() (err error) {
@@ -17,7 +16,7 @@ func CollectExecute() (err error) {
 	configuration := configuration.Configuration()
 
 	url := configuration.WalutomatUrl
-	ticker := time.NewTicker(time.Second * 60)
+	ticker := time.NewTicker(time.Second * 10)
 
 	// Create a new HTTPClient
 	influxdb, err := client.NewHTTPClient(client.HTTPConfig{
@@ -27,15 +26,16 @@ func CollectExecute() (err error) {
 	})
 
 	if err != nil {
-		log.Fatal(err)
+		logger.Get().Fatal(err)
 	}
 
 	go func() {
-		log.Println("Start at", time.Now())
+		logger.Get().Println("Start at", time.Now())
 		handleResponse(http.GetUrl(url), influxdb, configuration.InfluxDbDatabase)
 		for t := range ticker.C {
-			log.Println("Start at", t)
-			handleResponse(http.GetUrl(url), influxdb, configuration.InfluxDbDatabase)
+			logger.Get().Println("Start at", t)
+			response := http.GetUrl(url)
+			handleResponse(response, influxdb, configuration.InfluxDbDatabase)
 		}
 	}()
 
@@ -47,6 +47,13 @@ func CollectExecute() (err error) {
 
 func handleResponse(response []byte, influxdb client.Client, db string) {
 
+	defer func() {
+		if err := recover(); err != nil {
+			logger.Get().Error("Sending data to influx failed:", err)
+			http.FlushBufferToFile()
+		}
+	}()
+
 	// Create a new point batch
 	bp, err := client.NewBatchPoints(client.BatchPointsConfig{
 		Database:  db,
@@ -54,11 +61,11 @@ func handleResponse(response []byte, influxdb client.Client, db string) {
 	})
 	if err != nil {
 		http.FlushBufferToFile()
-		log.Fatal(err)
+		logger.Get().Fatal(err)
 	}
 
 	for index, offer := range walutomat.Convert(response) {
-		fmt.Println(index, offer)
+		logger.Get().Info(index, offer)
 
 		// Create a point and add to batch
 		tags := map[string]string{"pair": offer.Pair}
@@ -76,14 +83,13 @@ func handleResponse(response []byte, influxdb client.Client, db string) {
 		pt, err := client.NewPoint("offers", tags, fields, time.Now())
 		if err != nil {
 			http.FlushBufferToFile()
-			log.Fatal(err)
+			logger.Get().Fatal(err)
 		}
 		bp.AddPoint(pt)
 	}
 
 	// Write the batch
 	if err := influxdb.Write(bp); err != nil {
-		http.FlushBufferToFile()
-		log.Fatal(err)
+		panic(err)
 	}
 }

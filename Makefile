@@ -2,4 +2,4 @@ APP_NAME = xchange
 GOBIN = $(GOPATH)/bin
 
 go-build:
-	go build -o ./cache/$(APP_NAME) .
+	GOOS=linux GOARCH=amd64 go build -o ./build/linux_amd64_$(APP_NAME) .

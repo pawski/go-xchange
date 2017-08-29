@@ -1,10 +1,12 @@
 package misc
 
-import "log"
+import (
+	"github.com/pawski/go-xchange/logger"
+)
 
 func Check(e error) {
 	if e != nil {
-		log.Panic(e)
+		logger.Get().Panic(e)
 		panic(e)
 	}
 }

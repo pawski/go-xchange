@@ -2,8 +2,8 @@ package configuration
 
 import (
 	"gopkg.in/yaml.v2"
-	"log"
 	"io/ioutil"
+	"github.com/pawski/go-xchange/logger"
 )
 
 type config struct {
@@ -29,7 +29,7 @@ func loadConfiguration() (config)  {
 	source, err := ioutil.ReadFile("config.yml")
 
 	if err != nil {
-		log.Fatalf("error: %v", err)
+		logger.Get().Fatalf("error: %v", err)
 	}
 
 	var config config

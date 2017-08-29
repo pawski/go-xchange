@@ -2,8 +2,8 @@ package walutomat
 
 import (
 	"strconv"
-	"log"
 	"encoding/json"
+	"github.com/pawski/go-xchange/logger"
 )
 
 func Convert(response []byte) ([] Offer) {
@@ -12,12 +12,12 @@ func Convert(response []byte) ([] Offer) {
 	err := json.Unmarshal(response, &offerResponseDecoded)
 
 	if err != nil {
-		log.Fatal(err)
+		logger.Get().Fatal(err)
 	}
 
 	offers :=  offerResponseToOffer(offerResponseDecoded)
 
-	log.Printf("Offers in response: %d", len(offers))
+	logger.Get().Printf("Offers in response: %d", len(offers))
 
 	return offers
 }
@@ -46,7 +46,7 @@ func stringToFloat(floatAsString string) (float32)  {
 	result, err := strconv.ParseFloat(floatAsString, 32)
 
 	if nil != err {
-		log.Printf("Conversion error %s\n", err)
+		logger.Get().Printf("Conversion error %s\n", err)
 	}
 
 	return float32(result)
