@@ -14,7 +14,7 @@ import (
 func CollectExecute() (err error) {
 	go procctl.RegisterSigTerm()
 
-	url := configuration.Configuration().WalutomatUrl
+	url := configuration.Get().WalutomatUrl
 	ticker := time.NewTicker(time.Second * 10)
 
 	go func() {
@@ -44,7 +44,7 @@ func handleResponse(response []byte) {
 
 	// Create a new point batch
 	bp, err := client.NewBatchPoints(client.BatchPointsConfig{
-		Database: configuration.Configuration().InfluxDbDatabase,
+		Database: configuration.Get().InfluxDbDatabase,
 		Precision: "s",
 	})
 

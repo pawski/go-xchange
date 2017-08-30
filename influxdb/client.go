@@ -15,7 +15,7 @@ func Get() (client.Client)  {
 		// Create a new HTTPClient
 		var err error
 		dbClient, err = client.NewHTTPClient(client.HTTPConfig{
-			Addr:     configuration.Configuration().InfluxDbHost,
+			Addr:     configuration.Get().InfluxDbHost,
 			Username: "",
 			Password: "",
 		})

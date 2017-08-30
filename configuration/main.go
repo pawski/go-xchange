@@ -4,6 +4,7 @@ import (
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"github.com/pawski/go-xchange/logger"
+	"sync"
 )
 
 type config struct {
@@ -12,17 +13,15 @@ type config struct {
 	InfluxDbDatabase string `yaml:"influx_database"`
 }
 
-var loaded = false
 var cfg config
+var once sync.Once
 
-func Configuration() (config)  {
-
-	if loaded {
-		return cfg
-	} else {
+func Get() (config)  {
+	once.Do(func() {
 		cfg = loadConfiguration()
-		return cfg
-	}
+	})
+
+	return cfg
 }
 
 func loadConfiguration() (config)  {
