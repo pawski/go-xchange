@@ -8,34 +8,22 @@ import (
 	"github.com/influxdata/influxdb/client/v2"
 	"github.com/pawski/go-xchange/configuration"
 	"github.com/pawski/go-xchange/logger"
+	"github.com/pawski/go-xchange/influxdb"
 )
 
 func CollectExecute() (err error) {
 	go procctl.RegisterSigTerm()
 
-	configuration := configuration.Configuration()
-
-	url := configuration.WalutomatUrl
+	url := configuration.Configuration().WalutomatUrl
 	ticker := time.NewTicker(time.Second * 10)
-
-	// Create a new HTTPClient
-	influxdb, err := client.NewHTTPClient(client.HTTPConfig{
-		Addr:     configuration.InfluxDbHost,
-		Username: "",
-		Password: "",
-	})
-
-	if err != nil {
-		logger.Get().Fatal(err)
-	}
 
 	go func() {
 		logger.Get().Println("Start at", time.Now())
-		handleResponse(http.GetUrl(url), influxdb, configuration.InfluxDbDatabase)
+		handleResponse(http.GetUrl(url))
 		for t := range ticker.C {
 			logger.Get().Println("Start at", t)
 			response := http.GetUrl(url)
-			handleResponse(response, influxdb, configuration.InfluxDbDatabase)
+			handleResponse(response)
 		}
 	}()
 
@@ -45,7 +33,7 @@ func CollectExecute() (err error) {
 	return
 }
 
-func handleResponse(response []byte, influxdb client.Client, db string) {
+func handleResponse(response []byte) {
 
 	defer func() {
 		if err := recover(); err != nil {
@@ -56,9 +44,10 @@ func handleResponse(response []byte, influxdb client.Client, db string) {
 
 	// Create a new point batch
 	bp, err := client.NewBatchPoints(client.BatchPointsConfig{
-		Database:  db,
+		Database: configuration.Configuration().InfluxDbDatabase,
 		Precision: "s",
 	})
+
 	if err != nil {
 		http.FlushBufferToFile()
 		logger.Get().Fatal(err)
@@ -89,7 +78,7 @@ func handleResponse(response []byte, influxdb client.Client, db string) {
 	}
 
 	// Write the batch
-	if err := influxdb.Write(bp); err != nil {
+	if err := influxdb.Get().Write(bp); err != nil {
 		panic(err)
 	}
 }
