@@ -11,6 +11,7 @@ type config struct {
 	InfluxDbHost    string `yaml:"influx_host"`
 	WalutomatUrl   string `yaml:"walutomat_url"`
 	InfluxDbDatabase string `yaml:"influx_database"`
+	CollectUpdateInterval int64 `yaml:"collect_update_interval"`
 }
 
 var cfg config

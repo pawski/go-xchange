@@ -1,3 +1,4 @@
 influx_host: https://influxdb.host
 influx_database: xchange
+collect_update_interval: 10 # In seconds
 walutomat_url: https://panel.walutomat.pl/api/v1/best_offers.php

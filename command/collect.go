@@ -15,7 +15,8 @@ func CollectExecute() (err error) {
 	go procctl.RegisterSigTerm()
 
 	url := configuration.Get().WalutomatUrl
-	ticker := time.NewTicker(time.Second * 10)
+	interval := time.Second * time.Duration(configuration.Get().CollectUpdateInterval)
+	ticker := time.NewTicker(interval)
 
 	go func() {
 		logger.Get().Println("Start at", time.Now())
