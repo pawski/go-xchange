@@ -4,44 +4,36 @@ import (
 	"time"
 	"github.com/pawski/go-xchange/procctl"
 	"github.com/pawski/go-xchange/walutomat"
-	"github.com/pawski/go-xchange/http"
 	"github.com/influxdata/influxdb/client/v2"
 	"github.com/pawski/go-xchange/configuration"
 	"github.com/pawski/go-xchange/logger"
 	"github.com/pawski/go-xchange/influxdb"
+	"github.com/pawski/go-xchange/rabbitmq"
+	"github.com/streadway/amqp"
 )
 
 func CollectExecute() (err error) {
 	go procctl.RegisterSigTerm()
 
-	url := configuration.Get().WalutomatUrl
-	interval := time.Second * time.Duration(configuration.Get().CollectUpdateInterval)
-	ticker := time.NewTicker(interval)
+	forever := make(chan bool)
 
-	go func() {
-		logger.Get().Println("Start at", time.Now())
-		handleResponse(http.GetUrl(url))
-		for t := range ticker.C {
-			logger.Get().Println("Start at", t)
-			response := http.GetUrl(url)
-			handleResponse(response)
+	logger.Get().Info("Setting up")
+
+	go rabbitmq.ConsumeFromQueue(func(deliveries <-chan amqp.Delivery) {
+		for d := range deliveries {
+			logger.Get().Info("Received a message")
+			handleMessageBody(d.Body)
+			d.Ack(false)
 		}
-	}()
+	})
 
-	block := make(chan bool, 1)
-	<-block
+	logger.Get().Infof(" [*] Waiting for messages. To exit press CTRL+C")
+	<-forever
 
 	return
 }
 
-func handleResponse(response []byte) {
-
-	defer func() {
-		if err := recover(); err != nil {
-			logger.Get().Error("Sending data to influx failed:", err)
-			http.FlushBufferToFile()
-		}
-	}()
+func handleMessageBody(response []byte) {
 
 	// Create a new point batch
 	bp, err := client.NewBatchPoints(client.BatchPointsConfig{
@@ -50,7 +42,6 @@ func handleResponse(response []byte) {
 	})
 
 	if err != nil {
-		http.FlushBufferToFile()
 		logger.Get().Fatal(err)
 	}
 
@@ -72,7 +63,6 @@ func handleResponse(response []byte) {
 
 		pt, err := client.NewPoint("offers", tags, fields, time.Now())
 		if err != nil {
-			http.FlushBufferToFile()
 			logger.Get().Fatal(err)
 		}
 		bp.AddPoint(pt)

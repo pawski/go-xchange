@@ -1,15 +1,16 @@
-hash: aecba4215953c3ee9d049a98a4085489aaa4f30d2e2a5c989e84c5cfcff73e85
-updated: 2017-08-28T21:20:21.303225613+02:00
+hash: 1e64dc7f5b3e35fc4988f53c39a06ff0b360b9f93ceb3c1a532df75b8e2de307
+updated: 2017-11-24T12:38:18.448273023+01:00
 imports:
 - name: github.com/influxdata/influxdb
-  version: 0c54d8fc744220b8dc70f2987e04e78fec951285
+  version: 6d2685d1738277a1c2672fc58df7994627769be6
   subpackages:
   - client/v2
-  - cmd
   - models
   - pkg/escape
 - name: github.com/Sirupsen/logrus
   version: f006c2ac4710855cf0f916dd6b77acf6b048dc6e
+- name: github.com/streadway/amqp
+  version: ff791c2d22d3f1588b4e2cc71a9fba5e1da90654
 - name: github.com/urfave/cli
   version: cfb38830724cc34fedffe9a2a29fb54fa9169cd1
 - name: golang.org/x/crypto

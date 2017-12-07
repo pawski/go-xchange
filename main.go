@@ -38,9 +38,17 @@ func main() {
 	app.Commands = []cli.Command{
 		{
 			Name:  "collect",
-			Usage: "Starts continues collection of currency rates",
+			Usage: "Collects currency rates",
 			Action: func(c *cli.Context) {
 				if err := command.CollectExecute(); err != nil {
+					logger.Get().Error(err)
+				}
+			},
+		},{
+			Name:  "fetch",
+			Usage: "Fetch currency rates",
+			Action: func(c *cli.Context) {
+				if err := command.FetchExecute(); err != nil {
 					logger.Get().Error(err)
 				}
 			},

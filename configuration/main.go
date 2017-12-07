@@ -9,8 +9,9 @@ import (
 
 type config struct {
 	InfluxDbHost    string `yaml:"influx_host"`
-	WalutomatUrl   string `yaml:"walutomat_url"`
 	InfluxDbDatabase string `yaml:"influx_database"`
+	RabbitMqUrl string `yaml:"rabbitmq_url"`
+	WalutomatUrl   string `yaml:"walutomat_url"`
 	CollectUpdateInterval int64 `yaml:"collect_update_interval"`
 }
 
