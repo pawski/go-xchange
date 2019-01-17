@@ -28,14 +28,14 @@ func offerResponseToOffer(offerResponse OffersResponse) ([] Offer) {
 	for _, offerResponse := range offerResponse.Offers {
 		offers = append(offers, Offer{
 			Pair: offerResponse.Pair,
-			Buy: stringToFloat(offerResponse.Buy),
-			BuyOld: stringToFloat(offerResponse.BuyOld),
-			Sell: stringToFloat(offerResponse.Sell),
-			SellOld: stringToFloat(offerResponse.SellOld),
+			Buy: stringToFloat(offerResponse.Buy.String()),
+			BuyOld: stringToFloat(offerResponse.BuyOld.String()),
+			Sell: stringToFloat(offerResponse.Sell.String()),
+			SellOld: stringToFloat(offerResponse.SellOld.String()),
 			CountBuy: offerResponse.CountBuy,
 			CountSell: offerResponse.CountSell,
-			Avg: stringToFloat(offerResponse.Avg),
-			AvgOld: stringToFloat(offerResponse.AvgOld),
+			Avg: stringToFloat(offerResponse.Avg.String()),
+			AvgOld: stringToFloat(offerResponse.AvgOld.String()),
 		})
 	}
 
