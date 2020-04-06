@@ -4,3 +4,9 @@ Collects continuously (with time interval) currency data and transfers it to Inf
 
 - On failed influx connection it saves fetch result to file for data recovery
 - Configuration via yml file
+
+# etc
+
+```bash
+docker network create xchange
+```

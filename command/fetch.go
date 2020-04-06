@@ -11,6 +11,7 @@ import (
 
 func FetchExecute() (err error) {
 	go procctl.RegisterSigTerm()
+	rabbitmq.Connect()
 
 	url := configuration.Get().WalutomatUrl
 	interval := time.Second * time.Duration(configuration.Get().CollectUpdateInterval)

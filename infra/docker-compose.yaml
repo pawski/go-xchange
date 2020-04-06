@@ -1,0 +1,13 @@
+version: "3.7"
+services:
+  messenger:
+    build: ./docker/messenger
+    container_name: messenger
+    ports:
+    - 5672:5672
+    - 15672:15672
+
+networks:
+  default:
+    external:
+      name: xchange
