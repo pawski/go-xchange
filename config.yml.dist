@@ -3,3 +3,5 @@ influx_database: xchange
 rabbitmq_url: amqp://guest:guest@localhost:5672
 collect_update_interval: 10 # In seconds
 walutomat_url: https://panel.walutomat.pl/api/v1/best_offers.php
+walutomat_api_key: xyz
+walutomat_api_host: https://api.walutomat.dev

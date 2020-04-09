@@ -52,6 +52,14 @@ func main() {
 					logger.Get().Error(err)
 				}
 			},
+		},{
+			Name: "balance",
+			Usage: "Fetch Account balance",
+			Action: func(c *cli.Context) {
+				if err := command.BalanceExecute(); err != nil {
+					logger.Get().Error(err)
+				}
+			},
 		},
 	}
 

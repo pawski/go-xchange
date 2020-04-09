@@ -13,6 +13,8 @@ type config struct {
 	RabbitMqUrl string `yaml:"rabbitmq_url"`
 	WalutomatUrl   string `yaml:"walutomat_url"`
 	CollectUpdateInterval int64 `yaml:"collect_update_interval"`
+	WalutomatApiKey string `yaml:"walutomat_api_key"`
+	WalutomatApiHost string `yaml:"walutomat_api_host"`
 }
 
 var cfg config
