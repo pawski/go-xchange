@@ -60,6 +60,14 @@ func main() {
 					logger.Get().Error(err)
 				}
 			},
+		},{
+			Name: "directrates",
+			Usage: "Fetch Direct Rates",
+			Action: func(c *cli.Context) {
+				if err := command.DirectRatesExecute(); err != nil {
+					logger.Get().Error(err)
+				}
+			},
 		},
 	}
 
