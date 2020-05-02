@@ -12,10 +12,10 @@ func BalanceExecute() (err error) {
 
 	apiClient := walutomat.NewApiClient(configuration.Get().WalutomatApiHost, configuration.Get().WalutomatApiKey)
 
-	balanceResponse, error := apiClient.GetAccountBalance()
+	balanceResponse, err := apiClient.GetAccountBalance()
 
-	if error != nil {
-		logger.Get().Error(error)
+	if err != nil {
+		logger.Get().Error(err)
 
 		return
 	}

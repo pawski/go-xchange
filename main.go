@@ -2,10 +2,10 @@ package main
 
 import (
 	"github.com/Sirupsen/logrus"
-	"os"
-	"github.com/urfave/cli"
 	"github.com/pawski/go-xchange/command"
 	"github.com/pawski/go-xchange/logger"
+	"github.com/urfave/cli"
+	"os"
 )
 
 func main() {
@@ -13,7 +13,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "XChange"
 	app.Version = "v0.1"
-	app.Description = "Application for currency rates collection"
+	app.Description = "Application for currency exchange support"
 	app.Usage = ""
 
 	var debugLogging bool
@@ -71,5 +71,9 @@ func main() {
 		},
 	}
 
-	app.Run(os.Args)
+	err := app.Run(os.Args)
+
+	if err != nil {
+		logger.Get().Fatal(err)
+	}
 }

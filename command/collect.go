@@ -1,15 +1,15 @@
 package command
 
 import (
-	"time"
-	"github.com/pawski/go-xchange/procctl"
-	"github.com/pawski/go-xchange/walutomat"
 	"github.com/influxdata/influxdb/client/v2"
 	"github.com/pawski/go-xchange/configuration"
-	"github.com/pawski/go-xchange/logger"
 	"github.com/pawski/go-xchange/influxdb"
+	"github.com/pawski/go-xchange/logger"
+	"github.com/pawski/go-xchange/procctl"
 	"github.com/pawski/go-xchange/rabbitmq"
+	"github.com/pawski/go-xchange/walutomat"
 	"github.com/streadway/amqp"
+	"time"
 )
 
 func CollectExecute() (err error) {

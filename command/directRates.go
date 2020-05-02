@@ -12,10 +12,10 @@ func DirectRatesExecute() (err error) {
 
 	apiClient := walutomat.NewApiClient(configuration.Get().WalutomatApiHost, configuration.Get().WalutomatApiKey)
 
-	ratesResponse, error := apiClient.GetDirectRates(walutomat.EURPLN)
+	ratesResponse, err := apiClient.GetDirectRates(walutomat.EURPLN)
 
-	if error != nil {
-		logger.Get().Error(error)
+	if err != nil {
+		logger.Get().Error(err)
 
 		return
 	}
