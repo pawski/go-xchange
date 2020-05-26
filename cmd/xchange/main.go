@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/Sirupsen/logrus"
-	"github.com/pawski/go-xchange/command"
+	"github.com/pawski/go-xchange/application/command"
 	"github.com/pawski/go-xchange/logger"
 	"github.com/urfave/cli"
 	"os"
