@@ -44,7 +44,7 @@ func main() {
 					logger.Get().Error(err)
 				}
 			},
-		},{
+		}, {
 			Name:  "fetch",
 			Usage: "Fetch currency rates",
 			Action: func(c *cli.Context) {
@@ -52,21 +52,27 @@ func main() {
 					logger.Get().Error(err)
 				}
 			},
-		},{
-			Name: "balance",
+		}, {
+			Name:  "balance",
 			Usage: "Fetch Account balance",
 			Action: func(c *cli.Context) {
 				if err := command.BalanceExecute(); err != nil {
 					logger.Get().Error(err)
 				}
 			},
-		},{
-			Name: "directrates",
+		}, {
+			Name:  "directrates",
 			Usage: "Fetch Direct Rates",
 			Action: func(c *cli.Context) {
 				if err := command.DirectRatesExecute(); err != nil {
 					logger.Get().Error(err)
 				}
+			},
+		}, {
+			Name:  "run",
+			Usage: "Runs continuous monitoring",
+			Action: func(c *cli.Context) {
+				command.RunExecute()
 			},
 		},
 	}
