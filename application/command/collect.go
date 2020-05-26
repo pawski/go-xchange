@@ -74,6 +74,7 @@ func handleMessageBody(response []byte) {
 			"AvgOld" : offer.AvgOld,
 		}
 
+		logger.Get().Debug(fields)
 		pt, err := client.NewPoint("offers", tags, fields, time.Now())
 		if err != nil {
 			logger.Get().Fatal(err)
