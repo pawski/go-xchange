@@ -7,14 +7,13 @@ import (
 	"syscall"
 )
 
-func RegisterSigTerm() {
+func RegisterSigTerm(shouldRun *bool) {
 	s := make(chan os.Signal, 1)
 	signal.Notify(s, os.Interrupt)
 	signal.Notify(s, syscall.SIGTERM)
-	go func() {
+	go func(shouldRun *bool) {
 		<-s
-		fmt.Println("Shutting down gracefully.")
-		// clean up here
-		os.Exit(0)
-	}()
+		fmt.Println("Finishing remaining tasks...")
+		*shouldRun = false
+	}(shouldRun)
 }

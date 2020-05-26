@@ -5,30 +5,43 @@ import (
 	"github.com/pawski/go-xchange/configuration"
 	"github.com/pawski/go-xchange/influxdb"
 	"github.com/pawski/go-xchange/logger"
-	"github.com/pawski/go-xchange/procctl"
 	"github.com/pawski/go-xchange/rabbitmq"
 	"github.com/pawski/go-xchange/walutomat"
 	"github.com/streadway/amqp"
+	"os"
+	"os/signal"
+	"sync"
+	"syscall"
 	"time"
 )
 
 func CollectExecute() (err error) {
-	go procctl.RegisterSigTerm()
+	wg := sync.WaitGroup{}
 
-	forever := make(chan bool)
+	s := make(chan os.Signal, 1)
+	signal.Notify(s, os.Interrupt)
+	signal.Notify(s, syscall.SIGTERM)
 
 	logger.Get().Info("Setting up")
 
+	wg.Add(1)
 	go rabbitmq.ConsumeFromQueue(func(deliveries <-chan amqp.Delivery) {
-		for d := range deliveries {
-			logger.Get().Info("Received a message")
-			handleMessageBody(d.Body)
-			d.Ack(false)
+		for {
+			select {
+			case d := <-deliveries:
+				logger.Get().Info("Received a message")
+				handleMessageBody(d.Body)
+				d.Ack(false)
+			case <-s:
+				logger.Get().Info("Shutting down...")
+				wg.Done()
+				return
+			}
 		}
 	})
 
 	logger.Get().Infof(" [*] Waiting for messages. To exit press CTRL+C")
-	<-forever
+	wg.Wait()
 
 	return
 }
