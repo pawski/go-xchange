@@ -11,8 +11,8 @@ import (
 )
 
 type ApiClient struct {
-	host       string
-	apiKey     string
+	host   string
+	apiKey string
 }
 
 func NewApiClient(host string, apiKey string) *ApiClient {
@@ -21,7 +21,7 @@ func NewApiClient(host string, apiKey string) *ApiClient {
 
 func (api *ApiClient) GetDirectRates(pair CurrencyPair) (*direct.RatesResponse, error) {
 	httpClient := &http.Client{}
-	httpRequest, httpBuildError := http.NewRequest("GET", api.host + direct.ResourcePath, nil)
+	httpRequest, httpBuildError := http.NewRequest("GET", api.host+direct.ResourcePath, nil)
 
 	var ratesResponse *direct.RatesResponse
 
@@ -64,8 +64,8 @@ func (api *ApiClient) GetDirectRates(pair CurrencyPair) (*direct.RatesResponse, 
 
 func (api *ApiClient) GetAccountBalance() (*account.BalanceResponse, error) {
 
- 	httpClient := &http.Client{}
-	httpRequest, httpBuildError := http.NewRequest("GET", api.host + account.ResourcePath, nil)
+	httpClient := &http.Client{}
+	httpRequest, httpBuildError := http.NewRequest("GET", api.host+account.ResourcePath, nil)
 
 	var balanceResponse *account.BalanceResponse
 
