@@ -6,10 +6,16 @@ import:
   - client/v2
 - package: gopkg.in/yaml.v2
 - package: github.com/urfave/cli
-  version: ^1.20.0
+  version: ~1.21.0
 - package: github.com/Sirupsen/logrus
   version: ^1.0.3
 - package: golang.org/x/crypto
   subpackages:
   - ssh/terminal
 - package: github.com/streadway/amqp
+- package: github.com/cpuguy83/go-md2man/v2/md2man
+  repo: git@github.com:cpuguy83/go-md2man
+  vcs: git
+- package: golang.org/x/sys
+  repo: git@github.com:golang/sys
+  vcs: git
