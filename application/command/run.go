@@ -14,7 +14,7 @@ import (
 var shouldRun = true
 
 func RunExecute() {
-	registerSigTerm()
+	registerSigTerm(&shouldRun)
 	logger.Get().Info("Trying to get Direct Rates balance")
 
 	apiClient := walutomat.NewApiClient(configuration.Get().WalutomatApiHost, configuration.Get().WalutomatApiKey)
@@ -26,13 +26,13 @@ func RunExecute() {
 	}
 }
 
-func registerSigTerm() {
+func registerSigTerm(shouldRun *bool) {
 	s := make(chan os.Signal, 1)
 	signal.Notify(s, os.Interrupt)
 	signal.Notify(s, syscall.SIGTERM)
-	go func() {
+	go func(shouldRun *bool) {
 		<-s
-		fmt.Println("Shutting down gracefully.")
-		shouldRun = false
-	}()
+		fmt.Println("Shutting down gracefully...")
+		*shouldRun = false
+	}(shouldRun)
 }
