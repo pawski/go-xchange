@@ -20,7 +20,7 @@ type config struct {
 var cfg config
 var once sync.Once
 
-func Get() (config)  {
+func Get() config  {
 	once.Do(func() {
 		cfg = loadConfiguration()
 	})
@@ -28,7 +28,7 @@ func Get() (config)  {
 	return cfg
 }
 
-func loadConfiguration() (config)  {
+func loadConfiguration() config  {
 	source, err := ioutil.ReadFile("config.yml")
 
 	if err != nil {
