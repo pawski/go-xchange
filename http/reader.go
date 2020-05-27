@@ -1,16 +1,16 @@
 package http
 
 import (
-	"net/http"
-	"io/ioutil"
-	"github.com/pawski/go-xchange/misc"
-	"time"
 	"github.com/pawski/go-xchange/logger"
+	"github.com/pawski/go-xchange/misc"
+	"io/ioutil"
+	"net/http"
+	"time"
 )
 
 var buff []byte
 
-func GetUrl(url string) ([]byte) {
+func GetUrl(url string) []byte {
 	resp, err := http.Get(url)
 
 	if err != nil {
@@ -32,7 +32,7 @@ func GetUrl(url string) ([]byte) {
 	return body
 }
 
-func FlushBufferToFile()  {
+func FlushBufferToFile() {
 	writeToFile(buff)
 }
 

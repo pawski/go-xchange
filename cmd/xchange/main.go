@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/sirupsen/logrus"
 	"github.com/pawski/go-xchange/application/command"
 	"github.com/pawski/go-xchange/logger"
+	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 	"os"
 )

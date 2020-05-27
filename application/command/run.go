@@ -8,7 +8,6 @@ import (
 	"time"
 )
 
-
 func RunExecute() {
 	var shouldRun = true
 	procctl.RegisterSigTerm(&shouldRun)

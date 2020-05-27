@@ -50,7 +50,7 @@ func handleMessageBody(response []byte) {
 
 	// Create a new point batch
 	bp, err := client.NewBatchPoints(client.BatchPointsConfig{
-		Database: configuration.Get().InfluxDbDatabase,
+		Database:  configuration.Get().InfluxDbDatabase,
 		Precision: "s",
 	})
 
@@ -64,14 +64,14 @@ func handleMessageBody(response []byte) {
 		// Create a point and add to batch
 		tags := map[string]string{"pair": offer.Pair}
 		fields := map[string]interface{}{
-			"Buy": offer.Buy,
-			"BuyOld": offer.BuyOld,
-			"CountBuy": offer.CountBuy,
-			"Sell" : offer.Sell,
-			"SellOld" : offer.SellOld,
-			"CountSell" : offer.CountSell,
-			"Avg" : offer.Avg,
-			"AvgOld" : offer.AvgOld,
+			"Buy":       offer.Buy,
+			"BuyOld":    offer.BuyOld,
+			"CountBuy":  offer.CountBuy,
+			"Sell":      offer.Sell,
+			"SellOld":   offer.SellOld,
+			"CountSell": offer.CountSell,
+			"Avg":       offer.Avg,
+			"AvgOld":    offer.AvgOld,
 		}
 
 		logger.Get().Debug(fields)
