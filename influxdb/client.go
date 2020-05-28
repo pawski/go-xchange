@@ -10,14 +10,14 @@ import (
 var dbClient client.Client
 var once sync.Once
 
-func Get() (client.Client)  {
+func Get() client.Client  {
 	once.Do(func(){
 		// Create a new HTTPClient
 		var err error
 		dbClient, err = client.NewHTTPClient(client.HTTPConfig{
 			Addr:     configuration.Get().InfluxDbHost,
-			Username: "",
-			Password: "",
+			Username: configuration.Get().InfluxDbUser,
+			Password: configuration.Get().InfluxDbPassword,
 		})
 
 		if err != nil {
