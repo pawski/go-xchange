@@ -22,14 +22,14 @@ func CollectExecute() (err error) {
 	signal.Notify(s, os.Interrupt)
 	signal.Notify(s, syscall.SIGTERM)
 
-	logger.Get().Info("Setting up")
+	logger.Get().Info("Waiting for messages")
 
 	wg.Add(1)
 	go rabbitmq.ConsumeFromQueue(func(deliveries <-chan amqp.Delivery) {
 		for {
 			select {
 			case d := <-deliveries:
-				logger.Get().Info("Received a message")
+				logger.Get().Info("Received best offers")
 				handleMessageBody(d.Body)
 				d.Ack(false)
 			case <-s:
@@ -40,7 +40,7 @@ func CollectExecute() (err error) {
 		}
 	})
 
-	logger.Get().Infof(" [*] Waiting for messages. To exit press CTRL+C")
+	logger.Get().Infof("To exit press CTRL+C")
 	wg.Wait()
 
 	return
@@ -59,7 +59,7 @@ func handleMessageBody(response []byte) {
 	}
 
 	for index, offer := range walutomat.Convert(response) {
-		logger.Get().Info(index, offer)
+		logger.Get().Debug(index, offer)
 
 		// Create a point and add to batch
 		tags := map[string]string{"pair": offer.Pair}
