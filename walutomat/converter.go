@@ -17,7 +17,7 @@ func Convert(response []byte) []Offer {
 
 	offers := offerResponseToOffer(offerResponseDecoded)
 
-	logger.Get().Printf("Offers in response: %d", len(offers))
+	logger.Get().Debugf("Offers in response: %d", len(offers))
 
 	return offers
 }

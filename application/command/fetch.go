@@ -21,15 +21,17 @@ func FetchExecute() (err error) {
 
 	wg := sync.WaitGroup{}
 	wg.Add(1)
+
+	logger.Get().Infof("Fetching %v", url)
+
 	go func() {
-		logger.Get().Println("Start at", time.Now())
 		handleResponseMessage(http.GetUrl(url))
 		for t := range ticker.C {
 			if !shouldRun {
 				break
 			}
 
-			logger.Get().Println("Start at", t)
+			logger.Get().Infof("Starting at %v", t.Format("2006-01-02 15:04:05"))
 			response := http.GetUrl(url)
 			handleResponseMessage(response)
 		}

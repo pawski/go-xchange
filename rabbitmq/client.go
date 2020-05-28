@@ -87,7 +87,7 @@ func PublishToQueue(message []byte) {
 			ContentType: "text/plain",
 			Body:        []byte(body),
 		})
-	logger.Get().Infof(" [x] Sent %s", message)
+	logger.Get().Debugf(" Publishing message: %s", message)
 	failOnError(err, "Failed to publish a message")
 }
 

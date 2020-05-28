@@ -26,8 +26,7 @@ func GetUrl(url string) []byte {
 		buff = body
 	}
 
-	logger.Get().Printf("%d bytes", len(body))
-	logger.Get().Print(resp.Status)
+	logger.Get().Infof("%d bytes received, http code %v", len(body), resp.StatusCode)
 
 	return body
 }
