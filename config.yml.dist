@@ -1,4 +1,6 @@
 influx_host: https://localhost:8086
+influx_user: telegraf
+influx_password: secretpassword
 influx_database: xchange
 rabbitmq_url: amqp://guest:guest@localhost:5672
 collect_update_interval: 10 # In seconds
