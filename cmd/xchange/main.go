@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/pawski/go-xchange/application/command"
+	"github.com/pawski/go-xchange/configuration"
 	"github.com/pawski/go-xchange/logger"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
@@ -9,7 +10,6 @@ import (
 )
 
 func main() {
-
 	app := cli.NewApp()
 	app.Name = "XChange"
 	app.Version = "v0.1"
@@ -32,6 +32,9 @@ func main() {
 			logger.Get().Debug("Debug logging enabled")
 			logger.Get().Debug(app.Name, "-", app.Version)
 		}
+
+		logger.Get().Infof("Using %v", configuration.Get().WalutomatApiHost)
+
 		return nil
 	}
 
