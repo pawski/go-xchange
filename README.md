@@ -1,4 +1,5 @@
 # go-xchange
+Tool supporting currency exchange process via online currency exchange office 
 
 Collects continuously (with time interval) currency data and transfers it to InfluxDB.
 
