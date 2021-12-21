@@ -1,24 +1,24 @@
 package configuration
 
 import (
+	"github.com/pawski/go-xchange/logger"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
-	"github.com/pawski/go-xchange/logger"
 	"sync"
 )
 
 type config struct {
-	InfluxDbHost    string `yaml:"influx_host"`
-	InfluxDbDatabase string `yaml:"influx_database"`
-	RabbitMqUrl string `yaml:"rabbitmq_url"`
-	WalutomatUrl   string `yaml:"walutomat_url"`
-	CollectUpdateInterval int64 `yaml:"collect_update_interval"`
+	InfluxDbHost          string `yaml:"influx_host"`
+	InfluxDbDatabase      string `yaml:"influx_database"`
+	RabbitMqUrl           string `yaml:"rabbitmq_url"`
+	WalutomatUrl          string `yaml:"walutomat_url"`
+	CollectUpdateInterval int64  `yaml:"collect_update_interval"`
 }
 
 var cfg config
 var once sync.Once
 
-func Get() (config)  {
+func Get() config {
 	once.Do(func() {
 		cfg = loadConfiguration()
 	})
@@ -26,7 +26,7 @@ func Get() (config)  {
 	return cfg
 }
 
-func loadConfiguration() (config)  {
+func loadConfiguration() config {
 	source, err := ioutil.ReadFile("config.yml")
 
 	if err != nil {
