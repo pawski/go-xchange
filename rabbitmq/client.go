@@ -1,16 +1,16 @@
 package rabbitmq
 
 import (
-	"sync"
+	"github.com/pawski/go-xchange/configuration"
 	"github.com/pawski/go-xchange/logger"
 	"github.com/streadway/amqp"
-	"github.com/pawski/go-xchange/configuration"
+	"sync"
 )
 
 var connection = amqp.Connection{}
 var once sync.Once
 
-func Connect() (amqp.Connection) {
+func Connect() amqp.Connection {
 	once.Do(func() {
 		conn, err := amqp.Dial(configuration.Get().RabbitMqUrl)
 		failOnError(err, "Failed to connect to RabbitMQ")
@@ -21,7 +21,7 @@ func Connect() (amqp.Connection) {
 	return connection
 }
 
-func ConsumeFromQueue(consume func(<-chan amqp.Delivery)) () {
+func ConsumeFromQueue(consume func(<-chan amqp.Delivery)) {
 	Connect()
 
 	channel, err := connection.Channel()
@@ -30,11 +30,11 @@ func ConsumeFromQueue(consume func(<-chan amqp.Delivery)) () {
 
 	q, err := channel.QueueDeclare(
 		"rates_queue", // name
-		true,   // durable
-		false,   // delete when unused
-		false,   // exclusive
-		false,   // no-wait
-		nil,     // arguments
+		true,          // durable
+		false,         // delete when unused
+		false,         // exclusive
+		false,         // no-wait
+		nil,           // arguments
 	)
 	failOnError(err, "Failed to declare a queue")
 
@@ -48,7 +48,7 @@ func ConsumeFromQueue(consume func(<-chan amqp.Delivery)) () {
 	messages, err := channel.Consume(
 		q.Name, // queue
 		"",     // consumer
-		false,   // auto-ack
+		false,  // auto-ack
 		false,  // exclusive
 		false,  // no-local
 		false,  // no-wait
@@ -59,8 +59,7 @@ func ConsumeFromQueue(consume func(<-chan amqp.Delivery)) () {
 	consume(messages)
 }
 
-
-func PublishToQueue(message []byte)  {
+func PublishToQueue(message []byte) {
 
 	Connect()
 
@@ -70,11 +69,11 @@ func PublishToQueue(message []byte)  {
 
 	q, err := channel.QueueDeclare(
 		"rates_queue", // name
-		true,   // durable
-		false,   // delete when unused
-		false,   // exclusive
-		false,   // no-wait
-		nil,     // arguments
+		true,          // durable
+		false,         // delete when unused
+		false,         // exclusive
+		false,         // no-wait
+		nil,           // arguments
 	)
 	failOnError(err, "Failed to declare a queue")
 
@@ -88,7 +87,7 @@ func PublishToQueue(message []byte)  {
 			ContentType: "text/plain",
 			Body:        []byte(body),
 		})
-	logger.Get().Infof(" [x] Sent %s",message)
+	logger.Get().Infof(" [x] Sent %s", message)
 	failOnError(err, "Failed to publish a message")
 }
 

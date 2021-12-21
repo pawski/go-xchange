@@ -2,14 +2,13 @@ package main
 
 import (
 	"github.com/Sirupsen/logrus"
-	"os"
-	"github.com/urfave/cli"
 	"github.com/pawski/go-xchange/command"
 	"github.com/pawski/go-xchange/logger"
+	"github.com/urfave/cli"
+	"os"
 )
 
 func main() {
-
 	app := cli.NewApp()
 	app.Name = "XChange"
 	app.Version = "v0.1"
@@ -44,7 +43,7 @@ func main() {
 					logger.Get().Error(err)
 				}
 			},
-		},{
+		}, {
 			Name:  "fetch",
 			Usage: "Fetch currency rates",
 			Action: func(c *cli.Context) {

@@ -1,12 +1,12 @@
 package command
 
 import (
-	"github.com/pawski/go-xchange/procctl"
 	"github.com/pawski/go-xchange/configuration"
-	"time"
-	"github.com/pawski/go-xchange/logger"
 	"github.com/pawski/go-xchange/http"
+	"github.com/pawski/go-xchange/logger"
+	"github.com/pawski/go-xchange/procctl"
 	"github.com/pawski/go-xchange/rabbitmq"
+	"time"
 )
 
 func FetchExecute() (err error) {
