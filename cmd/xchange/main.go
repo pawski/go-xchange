@@ -1,19 +1,20 @@
 package main
 
 import (
-	"github.com/pawski/go-xchange/application/command"
-	"github.com/pawski/go-xchange/configuration"
-	"github.com/pawski/go-xchange/logger"
-	"github.com/sirupsen/logrus"
-	"github.com/urfave/cli"
 	"os"
+
+	"github.com/Sirupsen/logrus"
+	"github.com/urfave/cli"
+
+	"github.com/pawski/go-xchange/command"
+	"github.com/pawski/go-xchange/logger"
 )
 
 func main() {
 	app := cli.NewApp()
 	app.Name = "XChange"
 	app.Version = "v0.1"
-	app.Description = "Application for currency exchange support"
+	app.Description = "Application for currency rates collection"
 	app.Usage = ""
 
 	var debugLogging bool
@@ -32,9 +33,6 @@ func main() {
 			logger.Get().Debug("Debug logging enabled")
 			logger.Get().Debug(app.Name, "-", app.Version)
 		}
-
-		logger.Get().Infof("Using %v", configuration.Get().WalutomatApiHost)
-
 		return nil
 	}
 
@@ -55,34 +53,8 @@ func main() {
 					logger.Get().Error(err)
 				}
 			},
-		}, {
-			Name:  "balance",
-			Usage: "Fetch Account balance",
-			Action: func(c *cli.Context) {
-				if err := command.BalanceExecute(); err != nil {
-					logger.Get().Error(err)
-				}
-			},
-		}, {
-			Name:  "directrates",
-			Usage: "Fetch Direct Rates",
-			Action: func(c *cli.Context) {
-				if err := command.DirectRatesExecute(); err != nil {
-					logger.Get().Error(err)
-				}
-			},
-		}, {
-			Name:  "run",
-			Usage: "Runs continuous monitoring",
-			Action: func(c *cli.Context) {
-				command.RunExecute()
-			},
 		},
 	}
 
-	err := app.Run(os.Args)
-
-	if err != nil {
-		logger.Get().Fatal(err)
-	}
+	app.Run(os.Args)
 }

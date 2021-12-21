@@ -1,8 +1,9 @@
 package logger
 
 import (
-	"github.com/sirupsen/logrus"
 	"sync"
+
+	"github.com/Sirupsen/logrus"
 )
 
 var defaultLogger *logrus.Logger
