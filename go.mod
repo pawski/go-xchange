@@ -3,17 +3,19 @@ module github.com/pawski/go-xchange
 go 1.17
 
 require (
-	github.com/influxdata/influxdb v1.8.0
-	github.com/sirupsen/logrus v1.6.0
-	github.com/streadway/amqp v0.0.0-20200108173154-1c71cc93ed71
-	github.com/urfave/cli v1.22.4
-	gopkg.in/yaml.v2 v2.3.0
+	github.com/Sirupsen/logrus v1.0.3
+	github.com/influxdata/influxdb v1.4.2
+	github.com/streadway/amqp v0.0.0-20171101222333-ff791c2d22d3
+	github.com/urfave/cli v1.20.0
+	gopkg.in/yaml.v2 v2.0.0-20170812160011-eb3733d160e7
 )
 
 require (
-	github.com/cpuguy83/go-md2man/v2 v2.0.0-20190314233015-f79a8a8ca69d // indirect
-	github.com/konsorten/go-windows-terminal-sequences v1.0.3 // indirect
-	github.com/russross/blackfriday/v2 v2.0.1 // indirect
-	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
-	golang.org/x/sys v0.0.0-20200107162124-548cf772de50 // indirect
+	github.com/sirupsen/logrus v1.8.1 // indirect
+	github.com/stretchr/testify v1.7.0 // indirect
+	golang.org/x/crypto v0.0.0-20170825220121-81e90905daef // indirect
+	golang.org/x/sys v0.0.0-20191026070338-33540a1f6037 // indirect
+	gopkg.in/airbrake/gobrake.v2 v2.0.9 // indirect
+	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
+	gopkg.in/gemnasium/logrus-airbrake-hook.v2 v2.1.2 // indirect
 )
