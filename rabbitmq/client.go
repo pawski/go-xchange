@@ -1,10 +1,12 @@
 package rabbitmq
 
 import (
+	"sync"
+
+	"github.com/streadway/amqp"
+
 	"github.com/pawski/go-xchange/configuration"
 	"github.com/pawski/go-xchange/logger"
-	"github.com/streadway/amqp"
-	"sync"
 )
 
 var connection = amqp.Connection{}
@@ -87,7 +89,7 @@ func PublishToQueue(message []byte) {
 			ContentType: "text/plain",
 			Body:        []byte(body),
 		})
-	logger.Get().Debugf(" Publishing message: %s", message)
+	logger.Get().Infof(" [x] Sent %s", message)
 	failOnError(err, "Failed to publish a message")
 }
 

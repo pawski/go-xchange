@@ -1,11 +1,12 @@
 package http
 
 import (
-	"github.com/pawski/go-xchange/logger"
-	"github.com/pawski/go-xchange/misc"
 	"io/ioutil"
 	"net/http"
 	"time"
+
+	"github.com/pawski/go-xchange/logger"
+	"github.com/pawski/go-xchange/misc"
 )
 
 var buff []byte
@@ -26,7 +27,8 @@ func GetUrl(url string) []byte {
 		buff = body
 	}
 
-	logger.Get().Infof("%d bytes received, http code %v", len(body), resp.StatusCode)
+	logger.Get().Printf("%d bytes", len(body))
+	logger.Get().Print(resp.Status)
 
 	return body
 }

@@ -1,47 +1,36 @@
 package command
 
 import (
+	"time"
+
 	"github.com/influxdata/influxdb/client/v2"
+	"github.com/streadway/amqp"
+
 	"github.com/pawski/go-xchange/configuration"
 	"github.com/pawski/go-xchange/influxdb"
 	"github.com/pawski/go-xchange/logger"
+	"github.com/pawski/go-xchange/procctl"
 	"github.com/pawski/go-xchange/rabbitmq"
 	"github.com/pawski/go-xchange/walutomat"
-	"github.com/streadway/amqp"
-	"os"
-	"os/signal"
-	"sync"
-	"syscall"
-	"time"
 )
 
 func CollectExecute() (err error) {
-	wg := sync.WaitGroup{}
+	go procctl.RegisterSigTerm()
 
-	s := make(chan os.Signal, 1)
-	signal.Notify(s, os.Interrupt)
-	signal.Notify(s, syscall.SIGTERM)
+	forever := make(chan bool)
 
-	logger.Get().Info("Waiting for messages")
+	logger.Get().Info("Setting up")
 
-	wg.Add(1)
 	go rabbitmq.ConsumeFromQueue(func(deliveries <-chan amqp.Delivery) {
-		for {
-			select {
-			case d := <-deliveries:
-				logger.Get().Info("Received best offers")
-				handleMessageBody(d.Body)
-				d.Ack(false)
-			case <-s:
-				logger.Get().Info("Shutting down...")
-				wg.Done()
-				return
-			}
+		for d := range deliveries {
+			logger.Get().Info("Received a message")
+			handleMessageBody(d.Body)
+			d.Ack(false)
 		}
 	})
 
-	logger.Get().Infof("To exit press CTRL+C")
-	wg.Wait()
+	logger.Get().Infof(" [*] Waiting for messages. To exit press CTRL+C")
+	<-forever
 
 	return
 }
@@ -59,7 +48,7 @@ func handleMessageBody(response []byte) {
 	}
 
 	for index, offer := range walutomat.Convert(response) {
-		logger.Get().Debug(index, offer)
+		logger.Get().Info(index, offer)
 
 		// Create a point and add to batch
 		tags := map[string]string{"pair": offer.Pair}
@@ -74,7 +63,6 @@ func handleMessageBody(response []byte) {
 			"AvgOld":    offer.AvgOld,
 		}
 
-		logger.Get().Debug(fields)
 		pt, err := client.NewPoint("offers", tags, fields, time.Now())
 		if err != nil {
 			logger.Get().Fatal(err)
