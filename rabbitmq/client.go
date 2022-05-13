@@ -9,15 +9,14 @@ import (
 	"github.com/pawski/go-xchange/logger"
 )
 
-var connection = amqp.Connection{}
+var connection = &amqp.Connection{}
 var once sync.Once
 
-func Connect() amqp.Connection {
+func Connect() *amqp.Connection {
 	once.Do(func() {
-		conn, err := amqp.Dial(configuration.Get().RabbitMqUrl)
+		var err error
+		connection, err = amqp.Dial(configuration.Get().RabbitMqUrl)
 		failOnError(err, "Failed to connect to RabbitMQ")
-
-		connection = *conn
 	})
 
 	return connection

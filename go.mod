@@ -7,7 +7,7 @@ require (
 	github.com/influxdata/influxdb v1.4.2
 	github.com/streadway/amqp v0.0.0-20171101222333-ff791c2d22d3
 	github.com/urfave/cli v1.20.0
-	gopkg.in/yaml.v2 v2.0.0-20170812160011-eb3733d160e7
+	gopkg.in/yaml.v2 v2.4.0
 )
 
 require (

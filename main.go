@@ -6,7 +6,7 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/urfave/cli"
 
-	"github.com/pawski/go-xchange/command"
+	"github.com/pawski/go-xchange/application/command"
 	"github.com/pawski/go-xchange/logger"
 )
 

@@ -1,6 +1,7 @@
 package command
 
 import (
+	"sync"
 	"time"
 
 	"github.com/influxdata/influxdb/client/v2"
@@ -15,22 +16,28 @@ import (
 )
 
 func CollectExecute() (err error) {
-	go procctl.RegisterSigTerm()
+	var shouldRun = true
+	procctl.RegisterSigTerm(&shouldRun)
 
-	forever := make(chan bool)
+	wg := sync.WaitGroup{}
 
 	logger.Get().Info("Setting up")
 
 	go rabbitmq.ConsumeFromQueue(func(deliveries <-chan amqp.Delivery) {
+		wg.Add(1)
+		defer wg.Done()
 		for d := range deliveries {
 			logger.Get().Info("Received a message")
 			handleMessageBody(d.Body)
 			d.Ack(false)
+			if shouldRun == false {
+				return
+			}
 		}
 	})
 
 	logger.Get().Infof(" [*] Waiting for messages. To exit press CTRL+C")
-	<-forever
+	wg.Wait()
 
 	return
 }
