@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/pawski/go-xchange/logger"
-	"github.com/pawski/go-xchange/misc"
+	"github.com/pawski/go-xchange/internal/logger"
+	"github.com/pawski/go-xchange/internal/misc"
 )
 
 var buff []byte

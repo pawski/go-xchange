@@ -3,11 +3,12 @@ package walutomat
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/pawski/go-xchange/logger"
-	"github.com/pawski/go-xchange/walutomat/resources/account"
-	"github.com/pawski/go-xchange/walutomat/resources/direct"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/pawski/go-xchange/internal/logger"
+	"github.com/pawski/go-xchange/internal/walutomat/resources/account"
+	"github.com/pawski/go-xchange/internal/walutomat/resources/direct"
 )
 
 type ApiClient struct {

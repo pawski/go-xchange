@@ -4,10 +4,11 @@ import (
 	"os"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
+	_ "go.uber.org/automaxprocs"
 
-	"github.com/pawski/go-xchange/application/command"
-	"github.com/pawski/go-xchange/logger"
+	"github.com/pawski/go-xchange/internal/application/command"
+	"github.com/pawski/go-xchange/internal/logger"
 )
 
 func main() {
@@ -19,7 +20,7 @@ func main() {
 
 	var debugLogging bool
 	app.Flags = []cli.Flag{
-		cli.BoolFlag{
+		&cli.BoolFlag{
 			Name:        "debug, d",
 			Usage:       "Enable debug logging",
 			Destination: &debugLogging,
@@ -28,7 +29,7 @@ func main() {
 
 	app.Before = func(c *cli.Context) error {
 		logger.Get().Formatter = &logrus.TextFormatter{FullTimestamp: true}
-		if c.GlobalBool("debug") {
+		if c.Bool("debug") {
 			logger.SetDebugLevel()
 			logger.Get().Debug("Debug logging enabled")
 			logger.Get().Debug(app.Name, "-", app.Version)
@@ -36,25 +37,23 @@ func main() {
 		return nil
 	}
 
-	app.Commands = []cli.Command{
+	app.Commands = []*cli.Command{
 		{
 			Name:  "collect",
 			Usage: "Collects currency rates",
-			Action: func(c *cli.Context) {
-				if err := command.CollectExecute(); err != nil {
-					logger.Get().Error(err)
-				}
+			Action: func(_ *cli.Context) error {
+				return command.CollectExecute()
 			},
 		}, {
 			Name:  "fetch",
 			Usage: "Fetch currency rates",
-			Action: func(c *cli.Context) {
-				if err := command.FetchExecute(); err != nil {
-					logger.Get().Error(err)
-				}
+			Action: func(_ *cli.Context) error {
+				return command.FetchExecute()
 			},
 		},
 	}
 
-	app.Run(os.Args)
+	if err := app.Run(os.Args); err != nil {
+		logger.Get().Fatal(err)
+	}
 }

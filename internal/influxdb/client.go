@@ -1,10 +1,12 @@
 package influxdb
 
 import (
-	"github.com/influxdata/influxdb/client/v2"
-	"github.com/pawski/go-xchange/configuration"
-	"github.com/pawski/go-xchange/logger"
 	"sync"
+
+	"github.com/influxdata/influxdb/client/v2"
+
+	"github.com/pawski/go-xchange/internal/configuration"
+	"github.com/pawski/go-xchange/internal/logger"
 )
 
 var dbClient client.Client

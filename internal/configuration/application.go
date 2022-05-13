@@ -6,7 +6,7 @@ import (
 
 	"gopkg.in/yaml.v2"
 
-	"github.com/pawski/go-xchange/logger"
+	"github.com/pawski/go-xchange/internal/logger"
 )
 
 type config struct {

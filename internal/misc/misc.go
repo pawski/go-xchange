@@ -1,7 +1,7 @@
 package misc
 
 import (
-	"github.com/pawski/go-xchange/logger"
+	"github.com/pawski/go-xchange/internal/logger"
 )
 
 func Check(e error) {

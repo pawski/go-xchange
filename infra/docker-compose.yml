@@ -5,8 +5,8 @@ services:
     container_name: xchange-rabbitmq
     restart: unless-stopped
     ports:
-    - 5672:5672
-    - 15672:15672
+    - "5672:5672"
+    - "15672:15672"
 
   influxdb:
     container_name: xchange-influxdb
@@ -19,7 +19,7 @@ services:
     - INFLUXDB_USER=telegraf
     - INFLUXDB_USER_PASSWORD=secretpassword
     ports:
-    - 8086:8086
+    - "8086:8086"
     volumes:
     - influxdb-volume:/var/lib/influxdb
 
@@ -27,7 +27,7 @@ services:
     container_name: xchange-chronograf
     image: chronograf:1.8.4-alpine
     ports:
-    - 8888:8888
+    - "8888:8888"
     volumes:
     - chronograf-volume:/var/lib/chronograf
 
@@ -35,10 +35,9 @@ services:
     container_name: xchange-grafana
     image: grafana/grafana:7.0.1
     ports:
-    - 3000:3000
+    - "3000:3000"
     volumes:
     - grafana-volume:/var/lib/grafana
-
 
 volumes:
   influxdb-volume:

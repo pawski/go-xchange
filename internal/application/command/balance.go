@@ -1,9 +1,9 @@
 package command
 
 import (
-	"github.com/pawski/go-xchange/configuration"
-	"github.com/pawski/go-xchange/logger"
-	"github.com/pawski/go-xchange/walutomat"
+	"github.com/pawski/go-xchange/internal/configuration"
+	"github.com/pawski/go-xchange/internal/logger"
+	"github.com/pawski/go-xchange/internal/walutomat"
 )
 
 func BalanceExecute() (err error) {

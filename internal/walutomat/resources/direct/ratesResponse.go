@@ -2,7 +2,8 @@ package direct
 
 import (
 	"encoding/json"
-	"github.com/pawski/go-xchange/walutomat/resources"
+
+	"github.com/pawski/go-xchange/internal/walutomat/resources"
 )
 
 const ResourcePath = "/api/v2.0.0/direct_fx/rates"

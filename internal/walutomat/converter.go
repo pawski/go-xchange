@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"strconv"
 
-	"github.com/pawski/go-xchange/logger"
+	"github.com/pawski/go-xchange/internal/logger"
 )
 
 func Convert(response []byte) []Offer {
