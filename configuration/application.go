@@ -1,10 +1,12 @@
 package configuration
 
 import (
-	"github.com/pawski/go-xchange/logger"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"sync"
+
+	"gopkg.in/yaml.v2"
+
+	"github.com/pawski/go-xchange/logger"
 )
 
 type config struct {
