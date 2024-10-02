@@ -41,14 +41,13 @@ func main() {
 		{
 			Name:  "collect",
 			Usage: "Collects currency rates",
-			Action: func(_ *cli.Context) error {
-				return command.CollectExecute()
+			Action: func(ctx *cli.Context) error {
+				return command.CollectExecute(ctx.Context, ctx.Bool("dryRun"))
 			},
-		}, {
-			Name:  "fetch",
-			Usage: "Fetch currency rates",
-			Action: func(_ *cli.Context) error {
-				return command.FetchExecute()
+			Flags: []cli.Flag{
+				&cli.BoolFlag{
+					Name: "dryRun, r",
+				},
 			},
 		},
 	}

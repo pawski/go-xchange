@@ -9,47 +9,17 @@ import (
 	"time"
 
 	"github.com/influxdata/influxdb/client/v2"
-	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/streadway/amqp"
 
 	"github.com/pawski/go-xchange/internal/configuration"
 	"github.com/pawski/go-xchange/internal/influxdb"
+	"github.com/pawski/go-xchange/internal/infrastructure/cex/walutomat_v1"
 	"github.com/pawski/go-xchange/internal/logger"
-	"github.com/pawski/go-xchange/internal/rabbitmq"
-	"github.com/pawski/go-xchange/internal/walutomat"
 )
 
-func CollectExecute() error {
-	// TODO Normalise bootstrap
-	rabbitConnection, err := rabbitmq.NewConnection(configuration.Get().RabbitMqUrl)
-	if err != nil {
-		return errors.Wrap(err, "Cannot connect to rabbitMQ")
-	}
-
-	channel, err := rabbitConnection.Channel()
-	if err != nil {
-		return err
-	}
-	defer func() {
-		if err := channel.Close(); err != nil {
-			logger.Get().Error(err)
-		}
-	}()
-
-	rabbitQueue, err := channel.QueueDeclare(
-		"rates_queue", // name
-		true,          // durable
-		false,         // delete when unused
-		false,         // exclusive
-		false,         // no-wait
-		nil,           // arguments
-	)
-	if err != nil {
-		return err
-	}
+func CollectExecute(ctx context.Context, dryRun bool) error {
 
 	reg := prometheus.NewRegistry()
 	reg.MustRegister(collectors.NewBuildInfoCollector())
@@ -61,15 +31,15 @@ func CollectExecute() error {
 		promhttp.HandlerOpts{},
 	))
 
-	srv := &http.Server{
+	httpServer := &http.Server{
 		Addr:    "localhost:8000",
 		Handler: mux,
 	}
 
 	go func() {
-		err := srv.ListenAndServe()
+		err := httpServer.ListenAndServe()
 		if err != http.ErrServerClosed {
-			fmt.Println()
+			fmt.Println(err)
 		}
 	}()
 
@@ -78,44 +48,55 @@ func CollectExecute() error {
 	wait := make(chan os.Signal, 1)
 	logger.Get().Info("Setting up")
 
+	interval := time.Second * time.Duration(configuration.Get().CollectUpdateInterval)
+	ticker := time.NewTicker(interval)
+
+	httpClient := &http.Client{
+		Timeout: time.Second * time.Duration(10),
+	}
+	bestOffersCollector := walutomat_v1.NewBestOfferCollector(httpClient, configuration.Get().WalutomatUrl, logger.Get())
+
 	wg := sync.WaitGroup{}
-	shouldRun := true
-	go rabbitmq.ConsumeFromQueue(
-		channel,
-		rabbitQueue.Name,
-		func(deliveries <-chan amqp.Delivery) {
-			wg.Add(1)
-			defer wg.Done()
-			for d := range deliveries {
-				logger.Get().Info("Received a message")
-				handleMessageBody(d.Body)
-				err := d.Ack(false)
+	go func() {
+		wg.Add(1)
+		defer wg.Done()
+		for t := range ticker.C {
+			logger.Get().Println("Start at", t)
+			offers, err := bestOffersCollector.FindRecent(ctx)
+			if err != nil {
+				logger.Get().Error(err)
+				continue
+			}
+
+			if dryRun {
+				fmt.Println(offers, err)
+			} else {
+				err = sendToStore(offers)
 				if err != nil {
 					logger.Get().Error(err)
-				}
-				if shouldRun == false {
-					return
+					continue
 				}
 			}
-		})
+		}
+	}()
 
-	logger.Get().Infof(" [*] Waiting for messages. To exit press CTRL+C")
 	<-wait
-	shouldRun = false
+	ticker.Stop()
 	wg.Wait()
+
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer func() {
 		cancel()
 	}()
 
-	if err := srv.Shutdown(ctx); err != nil {
+	if err := httpServer.Shutdown(ctx); err != nil {
 		logger.Get().Fatalf("Server Shutdown Failed:%+v", err)
 	}
 
 	return nil
 }
 
-func handleMessageBody(response []byte) {
+func sendToStore(offers []walutomat_v1.Offer) error {
 	// Create a new point batch
 	bp, err := client.NewBatchPoints(client.BatchPointsConfig{
 		Database:  configuration.Get().InfluxDbDatabase,
@@ -123,10 +104,10 @@ func handleMessageBody(response []byte) {
 	})
 
 	if err != nil {
-		logger.Get().Fatal(err)
+		return err
 	}
 
-	for _, offer := range walutomat.Convert(response) {
+	for _, offer := range offers {
 		// Create a point and add to batch
 		tags := map[string]string{"pair": offer.Pair}
 		fields := map[string]interface{}{
@@ -142,13 +123,15 @@ func handleMessageBody(response []byte) {
 
 		pt, err := client.NewPoint("offers", tags, fields, time.Now())
 		if err != nil {
-			logger.Get().Fatal(err)
+			return err
 		}
 		bp.AddPoint(pt)
 	}
 
 	// Write the batch
 	if err := influxdb.Get().Write(bp); err != nil {
-		panic(err)
+		return err
 	}
+
+	return nil
 }
